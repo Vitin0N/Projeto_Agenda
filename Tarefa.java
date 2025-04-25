@@ -20,6 +20,7 @@ public class Tarefa extends CriaTela {
 
     public Tarefa(LocalDate data, int diaAtual) {
         super("Agenda dia '" + FormatDia(data, diaAtual) + "'", 400, 500);
+        setDefaultCloseOperation(HIDE_ON_CLOSE);
         
         this.data = LocalDate.of(data.getYear(), data.getMonth(), diaAtual);
         loadAgenda();
