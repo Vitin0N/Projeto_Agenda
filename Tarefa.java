@@ -51,6 +51,7 @@ public class Tarefa extends CriaTela {
         inputAgenda = new JTextField(15);
 
         boxPrioridade = new JComboBox<>(Prioridade.values());
+        boxPrioridade.setBackground(Color.LIGHT_GRAY);
         boxPrioridade.setRenderer(new DefaultListCellRenderer() {
             @Override
             public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {

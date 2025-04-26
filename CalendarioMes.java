@@ -1,7 +1,6 @@
 import java.time.*;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
 
 public class CalendarioMes extends CriaTela{
 
@@ -79,7 +78,6 @@ public class CalendarioMes extends CriaTela{
         Color azulCabecalho = new Color(70, 130, 180);
         Color vermelhoSab = new Color(255, 230, 230);
         Color hojeColor = new Color(220, 245, 220);
-        Color domingColor = Color.LIGHT_GRAY;
 
         for(String dia : diasSemana){//cria cabeçalho
             JLabel labelDia = new JLabel(dia, SwingConstants.CENTER);
@@ -115,11 +113,12 @@ public class CalendarioMes extends CriaTela{
 
             if(diaAtual){
                 btnDia.setBackground(hojeColor);
-                btnDia.setForeground(Color.green);
+                btnDia.setForeground(new Color(0,128,0));
                 btnDia.setFont(new Font("Arial", Font.BOLD, 14));
             } else if(diaSemanaAtual == 0){
-                btnDia.setBackground(domingColor);
-                btnDia.setForeground(Color.BLACK);
+                btnDia.setBackground(azulCabecalho);
+                btnDia.setForeground(Color.WHITE);
+                btnDia.setFont(new Font("Arial", Font.BOLD, 14));
             } else if(diaSemanaAtual == 6){
                 btnDia.setBackground(vermelhoSab);
                 btnDia.setForeground(Color.red);
@@ -144,7 +143,7 @@ public class CalendarioMes extends CriaTela{
     }
 
     public void tarefa(LocalDate a, int b){
-        Tarefa c = new Tarefa(a, b);
+        new Tarefa(a, b);
     }
     
 }
