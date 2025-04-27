@@ -18,6 +18,10 @@ public class Agenda extends CriaTela {
     private JTextField inputAgenda;
     private JComboBox<Prioridade> boxPrioridade;
 
+    public static Map<LocalDate, List<Tarefa>> getAgendaMap() {
+        return agendaMap;
+    }
+
     public Agenda(LocalDate data, int diaAtual) {
         super("Agenda dia '" + FormatDia(data, diaAtual) + "'", 400, 500);
         setDefaultCloseOperation(HIDE_ON_CLOSE);
@@ -127,7 +131,7 @@ public class Agenda extends CriaTela {
     }
 
     public static void saveAgenda() {
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("agendateste.dat"))) {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("agenda.dat"))) {
             oos.writeObject(agendaMap);
         } catch (IOException e) {
             e.printStackTrace();
@@ -136,7 +140,7 @@ public class Agenda extends CriaTela {
 
     @SuppressWarnings("unchecked")
     public static void loadAgenda() {
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("agendateste.dat"))) {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("agenda.dat"))) {
             agendaMap = (Map<LocalDate, List<Tarefa>>) ois.readObject();
         } catch (Exception e) {
             agendaMap = new HashMap<>();

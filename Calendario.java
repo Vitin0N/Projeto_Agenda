@@ -1,8 +1,10 @@
 import java.time.*;
+import java.time.format.DateTimeFormatter;
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
 
-public class CalendarioMes extends CriaTela{
+public class Calendario extends CriaTela{
 
     private YearMonth anoMesAtual;
     private JPanel panelDias;
@@ -10,7 +12,7 @@ public class CalendarioMes extends CriaTela{
     private static final String[] mesesIdx = {"Janeiro","Fevereiro","Março","Abril","Maio","Junho",
                                               "Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"};
 
-    public CalendarioMes(String titulo, int largura, int altura) {
+    public Calendario(String titulo, int largura, int altura) {
         super(titulo, largura, altura);
 
         anoMesAtual = YearMonth.now();
@@ -31,20 +33,31 @@ public class CalendarioMes extends CriaTela{
 
         JPanel painelBotoes = new JPanel();
 
+        //Botão para voltar o mês
         JButton btnAnterior = new JButton("◀");
         btnAnterior.setFocusable(false);
         btnAnterior.setBackground(new Color(210, 210, 225));
         btnAnterior.setFocusPainted(false);
 
-
+        //Botão para avançar o mês
         JButton btnProximo = new JButton("▶");
         btnProximo.setFocusable(false);
         btnProximo.setBackground(new Color(210, 210, 225));
         btnProximo.setFocusPainted(false);
 
+        //Botão para listar toda a lista de tarefa
+        JButton btnListar = new JButton("Listar Tarefas");
+        btnListar.setFocusable(false);
+        btnListar.setBackground(new Color(210, 210, 225));
+        btnListar.setFocusPainted(false);
+
+        JPanel organizaBotao = new JPanel();
+        organizaBotao.add(btnAnterior);
+        organizaBotao.add(btnProximo);
+
         //Adiciona os botões no painel, embaixo
-        painelBotoes.add(btnAnterior);
-        painelBotoes.add(btnProximo);
+        painelBotoes.add(organizaBotao, BorderLayout.WEST);
+        painelBotoes.add(btnListar, BorderLayout.EAST);
         add(painelBotoes, BorderLayout.SOUTH);
 
         panelDias = new JPanel(new GridLayout(0, 7));
@@ -60,6 +73,8 @@ public class CalendarioMes extends CriaTela{
             anoMesAtual = anoMesAtual.plusMonths(1);
             atualizarCalendario();
         });
+
+        btnListar.addActionListener(e -> ListarTarefa());
 
         atualizarCalendario();
 
@@ -146,4 +161,32 @@ public class CalendarioMes extends CriaTela{
         new Agenda(a, b);
     }
     
+    public void ListarTarefa(){
+        Agenda.loadAgenda();//carregar o arquivo das tarefas
+
+        StringBuilder sb = new StringBuilder();//Melhor para concatenação
+
+    if (Agenda.getAgendaMap().isEmpty()) {
+        sb.append("Nenhuma tarefa encontrada.");
+    } else {
+        for (LocalDate data : Agenda.getAgendaMap().keySet()) {
+            List<Tarefa> tarefas = Agenda.getAgendaMap().get(data);
+            if (!tarefas.isEmpty()) {
+                sb.append(data.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))).append(":\n");
+                for (Tarefa tarefa : tarefas) {
+                    sb.append(" - ").append(tarefa.toString()).append("\n");
+                }
+                sb.append("\n");
+            }
+        }
+    }
+
+    JTextArea area = new JTextArea(sb.toString());
+    area.setEditable(false);
+    area.setFont(new Font("Arial", Font.PLAIN, 14));
+    JScrollPane scroll = new JScrollPane(area);
+    scroll.setPreferredSize(new Dimension(400, 300));
+
+    JOptionPane.showMessageDialog(this, scroll, "Todas as Tarefas", JOptionPane.DEFAULT_OPTION);
+    }
 }
