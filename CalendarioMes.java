@@ -143,7 +143,7 @@ public class CalendarioMes extends CriaTela{
     }
 
     public void tarefa(LocalDate a, int b){
-        new Tarefa(a, b);
+        new Agenda(a, b);
     }
     
 }
