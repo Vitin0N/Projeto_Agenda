@@ -26,7 +26,7 @@ public class Tarefa implements Serializable {
 
     @Override
     public String toString() {
-        String check = completo ? "[✓]" : "[ ]";
+        String check = completo ? "[X]" : "[ ]";
         return String.format("%s %s - %s", check, prioridade.name(), descricao);
     }
 }

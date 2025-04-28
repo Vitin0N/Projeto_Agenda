@@ -166,7 +166,7 @@ public class Calendario extends CriaTela{
 
         StringBuilder sb = new StringBuilder();//Melhor para concatenação
 
-    if (Agenda.getAgendaMap().isEmpty()) {
+    if (Agenda.getAgendaMap().isEmpty() || Agenda.getAgendaMap().values().stream().allMatch(List::isEmpty)) {
         sb.append("Nenhuma tarefa encontrada.");
     } else {
         for (LocalDate data : Agenda.getAgendaMap().keySet()) {
