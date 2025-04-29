@@ -28,9 +28,9 @@ public class Agenda extends CriaTela {
         
         this.data = LocalDate.of(data.getYear(), data.getMonth(), diaAtual);
         loadAgenda();
-        listaAgenda = agendaMap.computeIfAbsent(this.data, k -> new ArrayList<>());
+        listaAgenda = agendaMap.computeIfAbsent(this.data, k -> new ArrayList<>());//caso a lista não exista cria uma lista vazia
 
-        configurarComponentes();
+        configurarComponentes();//configações dos componentes especificos da classe
         setVisible(true);
     }
 
@@ -39,7 +39,7 @@ public class Agenda extends CriaTela {
         setLayout(new BorderLayout());
 
         listModel = new DefaultListModel<>();
-        refreshList = () -> {
+        refreshList = () -> {//refresca a lista a cada ação tomada
             listModel.clear();
             listaAgenda.stream()
                 .sorted(Comparator.comparingInt(t -> t.getPrioridade().ordinal()))
@@ -47,7 +47,7 @@ public class Agenda extends CriaTela {
         };
         refreshList.run();
 
-        tarefaList = new JList<>(listModel);
+        tarefaList = new JList<>(listModel);//Faz uma jlist com uma lista de tarefas
         tarefaList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
         JScrollPane scrollPane = new JScrollPane(tarefaList);
 
@@ -67,8 +67,9 @@ public class Agenda extends CriaTela {
             }
         });
 
-        inputAgenda.addActionListener(e -> adicionarTarefa());
+        inputAgenda.addActionListener(e -> adicionarTarefa());//adiciona tarefa com enter
 
+        //Botões de ações
         JButton botaoadc = new JButton("Adicionar");
         botaoadc.setFocusable(false);
         botaoadc.setFocusPainted(false);
@@ -81,7 +82,7 @@ public class Agenda extends CriaTela {
 
         tarefaList.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() == 2) {
+                if (e.getClickCount() == 2) {//Quando o mouse clicar duas vezes do indice de uma tarefa ela é verificada
                     int index = tarefaList.locationToIndex(e.getPoint());
                     if (index >= 0) {
                         Tarefa task = listModel.get(index);
@@ -93,6 +94,7 @@ public class Agenda extends CriaTela {
             }
         });
 
+        //adicionando componentes ao panel
         inputPanel.add(inputAgenda);
         inputPanel.add(boxPrioridade);
         inputPanel.add(botaoadc);
@@ -102,7 +104,7 @@ public class Agenda extends CriaTela {
         add(botaoRemove, BorderLayout.SOUTH);
     }
 
-    private static String FormatDia(LocalDate data, int diaAtual) {
+    public static String FormatDia(LocalDate data, int diaAtual) {
         LocalDate realData = LocalDate.of(data.getYear(), data.getMonth(), diaAtual);
         DateTimeFormatter formatador = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         return realData.format(formatador);
@@ -113,9 +115,9 @@ public class Agenda extends CriaTela {
         Prioridade prioridade = (Prioridade) boxPrioridade.getSelectedItem();
         if (!texto.isEmpty()) {
             inputAgenda.setText("");
-            Tarefa task = new Tarefa(texto, prioridade);
-            listaAgenda.add(task);
-            refreshList.run();
+            Tarefa task = new Tarefa(texto, prioridade);//cria uma task
+            listaAgenda.add(task);//adiciona a Jlist
+            refreshList.run();//atualiza o panel, colocando em ordem por pesos
             saveAgenda();
         }
     }
@@ -123,15 +125,15 @@ public class Agenda extends CriaTela {
     private void removerTarefa() {
         int idx = tarefaList.getSelectedIndex();
         if (idx >= 0) {
-            Tarefa selected = listModel.get(idx);
+            Tarefa selected = listModel.get(idx);//seleciona o indice da JList
             listaAgenda.remove(selected);
             refreshList.run();
             saveAgenda();
         }
     }
 
-    public static void saveAgenda() {
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("agenda.dat"))) {
+    public static void saveAgenda() {//Salva as tarefas em um arquivo
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("agenda.dat"))) {//Se não existir o arquivo ele cria
             oos.writeObject(agendaMap);
         } catch (IOException e) {
             e.printStackTrace();
@@ -139,7 +141,7 @@ public class Agenda extends CriaTela {
     }
 
     @SuppressWarnings("unchecked")
-    public static void loadAgenda() {
+    public static void loadAgenda() {//Carrega o arquivo que tem as tarefas
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("agenda.dat"))) {
             agendaMap = (Map<LocalDate, List<Tarefa>>) ois.readObject();
         } catch (Exception e) {

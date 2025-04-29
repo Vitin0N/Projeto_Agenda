@@ -1,5 +1,4 @@
 import java.time.*;
-import java.time.format.DateTimeFormatter;
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
@@ -51,7 +50,7 @@ public class Calendario extends CriaTela{
         btnListar.setBackground(new Color(210, 210, 225));
         btnListar.setFocusPainted(false);
 
-        JPanel organizaBotao = new JPanel();
+        JPanel organizaBotao = new JPanel();//Panel para organizar os botões
         organizaBotao.add(btnAnterior);
         organizaBotao.add(btnProximo);
 
@@ -60,7 +59,7 @@ public class Calendario extends CriaTela{
         painelBotoes.add(btnListar, BorderLayout.EAST);
         add(painelBotoes, BorderLayout.SOUTH);
 
-        panelDias = new JPanel(new GridLayout(0, 7));
+        panelDias = new JPanel(new GridLayout(0, 7));//Faz um grid de 7 colunas
         add(panelDias, BorderLayout.CENTER);
 
         // Ações dos botões
@@ -81,7 +80,7 @@ public class Calendario extends CriaTela{
     }
 
     private void atualizarCalendario() {
-        panelDias.removeAll();
+        panelDias.removeAll();//apaga todo o panel, para a atualização do ano-mes
 
         LocalDate hoje = LocalDate.now();
         int diasNoMes = anoMesAtual.lengthOfMonth();
@@ -157,8 +156,8 @@ public class Calendario extends CriaTela{
         panelDias.repaint();
     }
 
-    public void tarefa(LocalDate a, int b){
-        new Agenda(a, b);
+    public void tarefa(LocalDate data, int dia_requerido){
+        new Agenda(data, dia_requerido);
     }
     
     public void ListarTarefa(){
@@ -169,10 +168,10 @@ public class Calendario extends CriaTela{
     if (Agenda.getAgendaMap().isEmpty() || Agenda.getAgendaMap().values().stream().allMatch(List::isEmpty)) {
         sb.append("Nenhuma tarefa encontrada.");
     } else {
-        for (LocalDate data : Agenda.getAgendaMap().keySet()) {
+        for (LocalDate data : Agenda.getAgendaMap().keySet()) {//percorre todos os locale date, pegando uma lista de tarefas
             List<Tarefa> tarefas = Agenda.getAgendaMap().get(data);
             if (!tarefas.isEmpty()) {
-                sb.append(data.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))).append(":\n");
+                sb.append(Agenda.FormatDia(data, data.getDayOfMonth())).append(":\n");
                 for (Tarefa tarefa : tarefas) {
                     sb.append(" - ").append(tarefa.toString()).append("\n");
                 }
