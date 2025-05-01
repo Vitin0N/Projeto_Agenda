@@ -1,6 +1,7 @@
 import java.time.*;
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Calendario extends CriaTela{
@@ -93,9 +94,11 @@ public class Calendario extends CriaTela{
         Color vermelhoSab = new Color(255, 230, 230);
         Color hojeColor = new Color(220, 245, 220);
 
-        for(String dia : diasSemana){//cria cabeçalho
+        for(String dia : diasSemana){ //cria cabeçalho
             JLabel labelDia = new JLabel(dia, SwingConstants.CENTER);
+
             labelDia.setOpaque(true);
+
             if(dia.equals("Sab")){
                 labelDia.setBackground(vermelhoSab);//troca a cor do dia se for sábado
                 labelDia.setForeground(Color.RED);
@@ -103,6 +106,7 @@ public class Calendario extends CriaTela{
                 labelDia.setBackground(azulCabecalho);
                 labelDia.setForeground(Color.WHITE);
             }
+            
             labelDia.setBorder(BorderFactory.createLineBorder(Color.WHITE, 1));
             labelDia.setFont(new Font("Arial", Font.BOLD, 14));
             panelDias.add(labelDia);
@@ -125,18 +129,22 @@ public class Calendario extends CriaTela{
 
             int diaSemanaAtual = (diaDaSemana + dia-1) % 7;//// 1=Segunda, 6=Sábado, 0=Domingo
 
-            if(diaAtual){
+            if(diaAtual)
+            {
                 btnDia.setBackground(hojeColor);
                 btnDia.setForeground(new Color(0,128,0));
                 btnDia.setFont(new Font("Arial", Font.BOLD, 14));
-            } else if(diaSemanaAtual == 0){
+            } else if(diaSemanaAtual == 0)
+            {
                 btnDia.setBackground(azulCabecalho);
                 btnDia.setForeground(Color.WHITE);
                 btnDia.setFont(new Font("Arial", Font.BOLD, 14));
-            } else if(diaSemanaAtual == 6){
+            } else if(diaSemanaAtual == 6)
+            {
                 btnDia.setBackground(vermelhoSab);
                 btnDia.setForeground(Color.red);
-            } else {
+            } else 
+            {
                 btnDia.setBackground(Color.WHITE);
                 btnDia.setForeground(Color.BLACK);  
             }
@@ -161,20 +169,36 @@ public class Calendario extends CriaTela{
     }
     
     public void ListarTarefa(){
-        Agenda.loadAgenda();//carregar o arquivo das tarefas
+        Agenda.loadAgenda(); //carregar o arquivo das tarefas
 
-        StringBuilder sb = new StringBuilder();//Melhor para concatenação
+        StringBuilder sb = new StringBuilder(); //Melhor para concatenação
 
-    if (Agenda.getAgendaMap().isEmpty() || Agenda.getAgendaMap().values().stream().allMatch(List::isEmpty)) {
-        sb.append("Nenhuma tarefa encontrada.");
-    } else {
-        for (LocalDate data : Agenda.getAgendaMap().keySet()) {//percorre todos os locale date, pegando uma lista de tarefas
+        List<LocalDate> listaDatas = new ArrayList<>();
+
+        if (Agenda.getAgendaMap().isEmpty() || Agenda.getAgendaMap().values().stream().allMatch(List::isEmpty)) {
+            sb.append("Nenhuma tarefa encontrada.");
+        } 
+        
+        else {
+            for (LocalDate data : Agenda.getAgendaMap().keySet()) { 
+                    listaDatas.add(data);
+            }
+
+        listaDatas.sort(LocalDate::compareTo); //Organiza a lista deixando em ordem crescente
+
+        for(LocalDate data : listaDatas){
+            //percorre todos os locale date, pegando uma lista de tarefas
             List<Tarefa> tarefas = Agenda.getAgendaMap().get(data);
+
+            tarefas.sort((t1, t2) -> t1.getPrioridade().compareTo(t2.getPrioridade())); // Example: Sorting by priority
+
             if (!tarefas.isEmpty()) {
                 sb.append(Agenda.FormatDia(data, data.getDayOfMonth())).append(":\n");
+
                 for (Tarefa tarefa : tarefas) {
                     sb.append(" - ").append(tarefa.toString()).append("\n");
                 }
+
                 sb.append("\n");
             }
         }
